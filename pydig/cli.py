@@ -46,7 +46,6 @@ def setup() -> None:
     )
 
 # download
-#! not yet still have a problem while downloading video
 @app.command(help="download data from youtube platform")
 def youtube(
 
