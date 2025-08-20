@@ -1,9 +1,9 @@
 from enum import Enum
 
 class YoutubeQuality(Enum) :
-    Q1 = "144p"
-    Q2 = "240p"
-    Q3 = "360p"
-    Q4 = "480p"
-    Q5 = "720p"
-    Q7 = "1080p"
+    Q1 = 144
+    Q2 = 240
+    Q3 = 360
+    Q4 = 480
+    Q5 = 720
+    Q7 = 1080

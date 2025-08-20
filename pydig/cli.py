@@ -3,8 +3,7 @@
 from pydig import (
     __version__,
     __app_name__,
-    SUCCESS,
-    ERRORS,
+    SetupError,
     data,
     forms,
     pydig,
@@ -33,66 +32,62 @@ def _version_fun(respond : bool) -> None :
 @app.command(help="initializing pydig CLI app")
 def setup() -> None:
     _data_error = data._create_app_output_location(otdata=data.DEFAULT_OUTPUT_LOCATION)
-    if _data_error != SUCCESS :
+    if _data_error :
         typer.secho(
-            f":( Oops something wrong: {ERRORS[_data_error]}",
-            fg = typer.colors.RED
+            f":) well done!",
+            fg = typer.colors.GREEN
         )
-        raise typer.Exit(1)
-
-    typer.secho(
-        f":) well done!",
-        fg = typer.colors.GREEN
-    )
+        raise typer.Exit()
+    raise SetupError(":( application setup failed!")
 
 # download
-@app.command(help="download data from youtube platform")
-def youtube(
+# @app.command(help="download data from youtube platform")
+# def youtube(
+#     # youtube video url
+#     url : str,
+#     # form mp3 | mp4
+#     form : forms.YoutubeForms = typer.Option(
+#         forms.YoutubeForms.MP4,
+#         "--form",
+#         "-f",
+#         help="available forms (MP3 | MP4)"
+#     ),
+#     # video quality [144, 240, 360, 480, 720, 1080]
+#     quality : qualities.YoutubeQuality = typer.Option(
+#         qualities.YoutubeQuality.Q3.value,
+#         "--quality",
+#         "-q",
+#         help="available qualities"
+#     )
+# ) -> None :
+#     # check if the user is connected
+#     is_connected = data.NetworkConnection().is_connected()
+#     if not is_connected:
+#         typer.secho(
+#             f":( {ERRORS[is_connected]}",
+#             fg = typer.colors.RED
+#         )
+#         raise typer.Exit(1)
 
-    url : str,
-
-    form : forms.YoutubeForms = typer.Option(
-        forms.YoutubeForms.MP4,
-        "--form",
-        "-f",
-        help="available forms (MP3 | MP4)"
-    ),
-
-    quality : qualities.YoutubeQuality = typer.Option(
-        qualities.YoutubeQuality.Q3,
-        "--quality",
-        "-q",
-        help="available qualities"
-    )
-) -> None :
-    # check if the user is connected
-    is_connected = data.NetworkConnection().is_connected()
-    if is_connected != SUCCESS :
-        typer.secho(
-            f":( {ERRORS[is_connected]}",
-            fg = typer.colors.RED
-        )
-        raise typer.Exit(1)
-
-    # downloading data
-    youtube = pydig.YoutubeController(url=url, form=form, quality=quality)
-    if youtube.is_valid() != SUCCESS:
-        typer.secho(
-            f":( {ERRORS[youtube.is_valid()]}",
-            fg = typer.colors.RED
-        )
-        raise typer.Exit(1)
-    download  = youtube.download()
-    if download != SUCCESS :
-        typer.secho(
-            f":( {ERRORS[download]}",
-            fg = typer.colors.RED
-        )
-        raise typer.Exit(1)
-    config_parser.read([config.DEFAULT_CONFIG_FILE_PATH])
-    typer.secho(
-        f":) data downloaded success [{config_parser['General']['output']}]"
-    )
+#     # downloading data
+#     youtube = pydig.YoutubeController(url=url, form=form, quality=quality)
+#     if youtube.is_valid() != SUCCESS:
+#         typer.secho(
+#             f":( {ERRORS[youtube.is_valid()]}",
+#             fg = typer.colors.RED
+#         )
+#         raise typer.Exit(1)
+#     download  = youtube.download()
+#     if download != SUCCESS :
+#         typer.secho(
+#             f":( {ERRORS[download]}, {youtube.quality}",
+#             fg = typer.colors.RED
+#         )
+#         raise typer.Exit(1)
+#     config_parser.read([config.DEFAULT_CONFIG_FILE_PATH])
+#     typer.secho(
+#         f":) data downloaded success [{config_parser['General']['output']}]"
+#     )
 
 
 

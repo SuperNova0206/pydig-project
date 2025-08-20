@@ -3,7 +3,11 @@
 from pathlib import Path
 from configparser import ConfigParser
 import typer
-from  pydig import __app_name__, CONFIG_DIR_ERROR, CONFIG_FILE_ERROR, WRITE_DATA_ERROR, SUCCESS
+from  pydig import (
+    __app_name__,
+    ConfigureError,
+    ConfigurationFileError
+)
 
 config_parser = ConfigParser()
 
@@ -19,16 +23,16 @@ class Config :
     @otdata.setter
     def otdata(self, otdata : Path) -> None : self.otdata = otdata
 
-    def write(self) -> int:
+    def write(self) -> bool:
         try :
             Config.DEFAULT_CONFIG_DIR_PATH.mkdir(exist_ok=True)
-        except OSError :
-            return CONFIG_DIR_ERROR
+        except ConfigureError:
+            raise ConfigureError(":( configuration file folder failed to create!")
 
         try :
             Config.DEFAULT_CONFIG_FILE_PATH.touch(exist_ok=True)
-        except OSError :
-            return CONFIG_FILE_ERROR
+        except ConfigureError :
+            raise ConfigureError(":( configuration file failed to create!")
 
         config_parser.read(Config.DEFAULT_CONFIG_FILE_PATH)
         config_parser["General"] = {"OUTPUT" : str(self.otdata)}
@@ -36,6 +40,6 @@ class Config :
         try :
             with Config.DEFAULT_CONFIG_FILE_PATH.open("w") as f :
                 config_parser.write(f)
-        except OSError :
-            return WRITE_DATA_ERROR
-        return SUCCESS
+        except ConfigurationFileError :
+            raise ConfigurationFileError(":( writing data to configuration file failed!")
+        return True
