@@ -1,10 +1,7 @@
 # pydig/pydig.py
 
-from pydig import (
-    config
-)
+from pydig import config, exceptions
 from pytubefix import YouTube
-import re
 from configparser import ConfigParser
 import ffmpeg
 from pathlib import Path
@@ -14,52 +11,24 @@ config_parser = ConfigParser()
 config = config.Config()
 
 
-# dealing with youtube actions
-# class YoutubeController :
-#     def __init__(self, url : str, form : str, quality : int) -> None :
-#         self.__url = url
-#         self.__form = form
-#         self.__quality = quality
+class YouTubeContoller :
+    def __init__(self, url : str, resolution : bool) -> None :
+        self.url = url
+        self.resolution = 0 if not resolution else resolution
 
-#     @property
-#     def url(self) -> str : return self.__url
-#     @url.setter
-#     def url(self, url : str) -> None : self.__url = url
+    # download data as form of mp3 (audio)
+    def audio(self) -> None :
+        """:( something wrong with this PATH it can't read ```config.ini``` correctly"""
+        PATH = config_parser["General"]["output"].join("/youtube/mp3")
+        try :
+            yt = YouTube(self.url)
+            yt.streams.filter(only_audio=True).first().download(output_path=PATH)
+        except exceptions.YouTubeError :
+            raise exceptions.YouTubeError(f":( couldn't download audio from \"{self.url}\"!")
+        return [yt.title, PATH]
 
-#     @property
-#     def form(self) -> int : return self.__form
-#     @form.setter
-#     def form(self, form : int) -> None : self.__form = form
-
-
-#     @property
-#     def quality(self) -> str : return self.__quality
-#     @quality.setter
-#     def quality(self, quality : str) -> None : self.__quality = quality
-
-#     def download(self) -> int :
-#         yt = YouTube(url=self.__url)
-#         config_parser.read(config.DEFAULT_CONFIG_FILE_PATH)
-#         if self.__form == "mp3" :
-#             try :
-#                 PATH = config_parser["General"]["output"] + "/youtube/mp3"
-#                 stream = yt.streams.filter(only_audio=True).first()
-#                 stream.download(output_path=PATH)
-#                 return SUCCESS
-#             except :
-#                 return DOWNLOAD_DATA_ERROR
-#         else :
-#             try :
-#                 # TODO : making the app able to download data from youtube with user choosed resolution
-#                 PATH = config_parser["General"]["output"] + "/youtube/mp4"
-#                 return SUCCESS
-#             except :
-#                 return DOWNLOAD_DATA_ERROR
-
-#     def is_valid(self) -> int :
-#         return SUCCESS if re.search(r'^(?:https?://)?(?:www\.)?youtube\.com/watch\?v=([A-Za-z0-9_-]{11})', self.__url) else DATA_ERROR
-#     def audio(self) -> int : ...
-
+    # downloading data as form mp4 (video)
+    def video(self) -> None : ...
 
 
 # dealing with instagram actions
