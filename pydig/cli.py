@@ -12,6 +12,7 @@ from pydig import (
 from pydig import exceptions
 from typing import Optional
 import typer
+from pathlib import Path
 
 app = typer.Typer(help="pydig CLI media downloader")
 
@@ -22,8 +23,15 @@ def _version_fun(respond : bool) -> None :
 
 # setup
 @app.command(help="initializing pydig CLI app")
-def setup() -> None:
-    _data_error = data._create_app_output_location(otdata=data.DEFAULT_OUTPUT_LOCATION)
+def setup(
+    output : Path = typer.Option(
+        data.DEFAULT_OUTPUT_LOCATION,
+        "--output",
+        "-o",
+        help="specify downloading folder"
+    )
+) -> None:
+    _data_error = data._create_app_output_location(otdata=output)
     if _data_error :
         typer.secho(
             f":) well done!",
@@ -35,8 +43,10 @@ def setup() -> None:
 # download
 @app.command(help="download data from youtube platform")
 def youtube(
+
     # youtube video url
     url : str,
+
     # form mp3 | mp4
     mimetype : forms.YoutubeForms = typer.Option(
         forms.YoutubeForms.MP4,
@@ -44,6 +54,7 @@ def youtube(
         "-f",
         help="available forms (MP3 | MP4)"
     ),
+
     # video quality [144, 240, 360, 480, 720, 1080]
     resolution : Optional[qualities.YoutubeQuality] = typer.Option(
         None,
@@ -58,7 +69,7 @@ def youtube(
     if mimetype == "mp3" :
         msg : list = youtubeProcess.audio()
         typer.secho(
-            f":) {msg[0]} downloaded successfully: \"{msg[1]}\""
+            f":) {msg[0]} downloaded successfully\n>>> \"{msg[1]}\""
         )
 
 

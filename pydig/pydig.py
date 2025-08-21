@@ -8,8 +8,8 @@ from pathlib import Path
 
 
 config_parser = ConfigParser()
-config = config.Config()
-
+config_parser.read(config.Config.DEFAULT_CONFIG_FILE_PATH)
+PATH : str = config_parser["General"]["output"]
 
 class YouTubeContoller :
     def __init__(self, url : str, resolution : bool) -> None :
@@ -18,8 +18,8 @@ class YouTubeContoller :
 
     # download data as form of mp3 (audio)
     def audio(self) -> None :
-        """:( something wrong with this PATH it can't read ```config.ini``` correctly"""
-        PATH = config_parser["General"]["output"].join("/youtube/mp3")
+        global PATH
+        PATH += "/youtube/mp3"
         try :
             yt = YouTube(self.url)
             yt.streams.filter(only_audio=True).first().download(output_path=PATH)
