@@ -65,12 +65,20 @@ def youtube(
 ) -> None :
     connection = data.NetworkConnection()
     connection.is_connected()
-    youtubeProcess = pydig.YouTubeContoller(url=url, resolution=False if resolution == None else resolution)
+    youtubeProcess = pydig.YouTubeContoller(url=url, resolution=360 if resolution == None else resolution)
     if mimetype == "mp3" :
         msg : list = youtubeProcess.audio()
         typer.secho(
-            f":) {msg[0]} downloaded successfully\n>>> \"{msg[1]}\""
+            f":) {msg[0]} downloaded successfully\n>>> \"{msg[1]}\"",
+            fg = typer.colors.GREEN
         )
+        raise typer.Exit()
+    msg : list = youtubeProcess.video()
+    typer.secho(
+        f":) \"{msg[0]}.mp4\" downloaded successfully\n>>> \"{msg[1]}\"",
+        fg = typer.colors.GREEN
+    )
+    raise typer.Exit()
 
 
 @app.callback()
