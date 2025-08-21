@@ -6,8 +6,7 @@ from pydig import (
     data,
     forms,
     pydig,
-    qualities,
-    config
+    qualities
 )
 from pydig import exceptions
 from typing import Optional
@@ -67,15 +66,15 @@ def youtube(
     connection.is_connected()
     youtubeProcess = pydig.YouTubeContoller(url=url, resolution=360 if resolution == None else resolution)
     if mimetype == "mp3" :
-        msg : list = youtubeProcess.audio()
+        msg : str = youtubeProcess.audio()
         typer.secho(
-            f":) {msg[0]} downloaded successfully\n>>> \"{msg[1]}\"",
+            f"audio downloaded successfully at [{msg}]",
             fg = typer.colors.GREEN
         )
         raise typer.Exit()
-    msg : list = youtubeProcess.video()
+    msg : str = youtubeProcess.video()
     typer.secho(
-        f":) \"{msg[0]}.mp4\" downloaded successfully\n>>> \"{msg[1]}\"",
+        f"video downloaded successfully at [{msg}]",
         fg = typer.colors.GREEN
     )
     raise typer.Exit()

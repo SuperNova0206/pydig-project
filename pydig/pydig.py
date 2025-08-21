@@ -3,8 +3,7 @@
 from pydig import config, exceptions
 from pytubefix import YouTube
 from configparser import ConfigParser
-import subprocess
-import os
+import os, re, subprocess
 
 
 config_parser = ConfigParser()
@@ -19,40 +18,40 @@ class YouTubeContoller :
     # download data as form of mp3 (audio)
     def audio(self) -> None :
         global PATH
-        PATH += "/youtube/audios"
+        PATH += r"\youtube\audios"
         try :
             yt = YouTube(self.url)
             yt.streams.filter(only_audio=True).first().download(output_path=PATH)
         except exceptions.YouTubeError :
             raise exceptions.YouTubeError(f":( couldn't download audio from \"{self.url}\"!")
-        return [yt.title, PATH]
+        return PATH
 
     # downloading data as form mp4 (video)
     def video(self) -> None :
         global PATH
-        PATH += "/youtube/videos"
+        PATH += r"\youtube\videos"
         try :
             yt = YouTube(self.url)
             yt.streams.filter(res=self.resolution, adaptive=True, file_extension="mp4").first().download(output_path=PATH, filename="video.mp4")
             yt.streams.filter(only_audio=True).first().download(output_path=PATH, filename="audio.mp3")
             subprocess.run(
                 [
-                "ffmpeg",
-                "-i", PATH + "/video.mp4",
-                "-i", PATH + "/audio.mp3",
-                "-c:v", "copy",
-                "-map", "0:v:0",
-                "-map", "1:a:0",
-                "-c:a", "copy",
-                PATH + f"/{yt.title}.mp4"
+                    "ffmpeg",
+                    "-i", PATH + "/video.mp4",
+                    "-i", PATH + "/audio.mp3",
+                    "-c:v", "copy",
+                    "-map", "0:v:0",
+                    "-map", "1:a:0",
+                    "-c:a", "copy",
+                    PATH + f"\{re.sub(r'[^A-Za-z\s]', '', yt.title)}.mp4"
                 ],
                 check=True
             )
-            os.remove(PATH + f"/video.mp4")
-            os.remove(PATH + f"/audio.mp3")
+            os.remove(PATH + f"\\video.mp4")
+            os.remove(PATH + f"\\audio.mp3")
         except exceptions.YouTubeError :
             raise exceptions.YouTubeError(f":( we coudn't download video form \"{self.url}\"")
-        return [yt.title, PATH]
+        return PATH
 
 
 # dealing with instagram actions
