@@ -3,7 +3,6 @@
 from pydig import config, exceptions
 from pytubefix import YouTube
 from configparser import ConfigParser
-import ffmpeg
 import subprocess
 import os
 
