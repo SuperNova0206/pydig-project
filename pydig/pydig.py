@@ -36,16 +36,17 @@ class YouTubeContoller :
             yt.streams.filter(only_audio=True).first().download(output_path=PATH, filename="audio.mp3")
             subprocess.run(
                 [
-                    "ffmpeg",
+                    "ffmpeg","-n"
                     "-i", PATH + "/video.mp4",
                     "-i", PATH + "/audio.mp3",
                     "-c:v", "copy",
                     "-map", "0:v:0",
                     "-map", "1:a:0",
                     "-c:a", "copy",
-                    PATH + f"\{re.sub(r'[^A-Za-z\s]', '', yt.title)}.mp4"
+                    PATH + f"\\{re.sub(r'[^A-Za-z\s]', '', yt.title)}.mp4"
                 ],
-                check=True
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
             )
             os.remove(PATH + f"\\video.mp4")
             os.remove(PATH + f"\\audio.mp3")
