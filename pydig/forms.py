@@ -9,10 +9,8 @@ class YoutubeForms(str, Enum):
 
 # instagram data forms
 class InstagramForms(str, Enum) :
-    MP4 = "mp4",
-    JPEG = "jpeg",
-    PNG = "png"
-    MP3 = "mp3"
+    VIDEO = "mp4"
+    PIC = "png"
 
 # tiktok data forms
 class TiktokFormats(str, Enum) : ...

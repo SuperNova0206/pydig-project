@@ -4,7 +4,7 @@ from pydig import config, exceptions
 from pytubefix import YouTube
 from configparser import ConfigParser
 import os, re, subprocess
-
+import instaloader
 
 config_parser = ConfigParser()
 config_parser.read(config.Config.DEFAULT_CONFIG_FILE_PATH)
@@ -56,8 +56,12 @@ class YouTubeContoller :
 
 
 # dealing with instagram actions
-class InstagramController : ...
+class InstagramController :
+    insta = instaloader.Instaloader()
+    def __init__(self, url : str) -> None :
+        self.url = url
 
+    def download(self) -> bool : ...
 # dealing with tiktok actions
 class TiktokController : ...
 

@@ -9,3 +9,4 @@ class AppErrors(Exception) :
 
 class SetupError(AppErrors) : pass
 class YouTubeError(AppErrors) : pass
+class InstagramError(AppErrors) : pass

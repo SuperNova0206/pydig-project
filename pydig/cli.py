@@ -79,6 +79,18 @@ def youtube(
     )
     raise typer.Exit()
 
+@app.command(help="download data from instagram platform")
+def instagram( url : str) -> None :
+    connection = data.NetworkConnection()
+    connection.is_connected()
+    InstagramProcess = pydig.InstagramController(url=url)
+    respond : str = InstagramProcess.download()
+    typer.secho(
+        f"Post downloaded successfully at [{respond}]",
+        fg = typer.colors.GREEN
+    )
+    raise typer.Exit()
+
 
 @app.callback()
 def main(

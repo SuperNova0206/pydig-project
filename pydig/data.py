@@ -7,6 +7,7 @@ from pydig.config import Config
 import requests as req
 
 DEFAULT_OUTPUT_LOCATION = Path.home().joinpath(f"{__app_name__}_output")
+config_parser = ConfigParser()
 
 def _create_app_output_location(otdata : Path) -> int :
     config_file = Config(otdata=otdata)
@@ -38,3 +39,6 @@ class NetworkConnection :
         except  req.ConnectionError:
             raise req.ConnectionError(":( you're not connect to the internet!")
         return True
+
+class InstagramModule :
+    def __init__(self) : ...
